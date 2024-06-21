@@ -6,12 +6,18 @@ export async function POST(request: Request) {
 
   const result = signUpSchema.safeParse(body);
 
-  // check out Zod's .flatten() method for an easier way to process errors
   let zodErrors = {};
   if (!result.success) {
     result.error.issues.forEach((issue) => {
       zodErrors = { ...zodErrors, [issue.path[0]]: issue.message };
     });
+
+    // Or use the zod .format() method
+    // const formattedError = result.error.format(); // will return object in the form: {name: { _errors: [ 'Expected string, received number' ] }}
+    // Object.keys(formattedError).forEach(
+    //   (formField) =>
+    //     (zodErrors[formField] = formattedError[formField]._errors.join(", "))
+    // );
   }
 
   return NextResponse.json(
